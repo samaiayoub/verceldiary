@@ -40,7 +40,9 @@
     const now = new Date();
     let displayedYear = now.getFullYear();
     let displayedMonth = now.getMonth();
-    const todayDate = now.toISOString().split('T')[0];
+
+    // ✅ FIXED: Get local date instead of UTC
+    const todayDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
     function formatDateDisplay(date) {
       const options = { day: 'numeric', month: 'long', year: 'numeric' };
@@ -60,7 +62,7 @@
 
       const monthStart = new Date(year, month, 1);
       const monthEnd = new Date(year, month + 1, 0);
-      const startDay = monthStart.getDay(); // 0 = Sunday
+      const startDay = monthStart.getDay();
       const totalDays = monthEnd.getDate();
 
       for (let i = 0; i < startDay; i++) {
