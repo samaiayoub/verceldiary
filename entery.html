@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Write Entry - My Diary</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-50 min-h-screen flex flex-col items-center p-8">
+
+  <div class="w-full max-w-3xl">
+    <h1 id="entryDate" class="text-3xl font-bold text-blue-800 mb-2 text-center"></h1>
+    <p class="text-blue-500 text-center mb-6">This is my private space to write what matters today.</p>
+
+    <!-- Writing Area -->
+    <textarea id="entryContent" 
+      class="w-full h-96 p-4 rounded-lg border border-blue-300 bg-white shadow focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-blue-900 text-lg"
+      placeholder="Start writing here..."></textarea>
+
+    <!-- Buttons -->
+    <div class="mt-6 flex justify-between">
+      <button onclick="goBack()" class="bg-blue-100 text-blue-700 hover:bg-blue-200 px-4 py-2 rounded shadow">← Back to Calendar</button>
+      <p id="status" class="text-sm text-blue-600 self-center hidden">Saved</p>
+    </div>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const date = urlParams.get('date');
+
+    const entryDate = document.getElementById('entryDate');
+    const entryContent = document.getElementById('entryContent');
+    const status = document.getElementById('status');
+
+    // Display formatted date
+    function formatDate(d) {
+      const options = { day: 'numeric', month: 'long', year: 'numeric' };
+      return new Date(d).toLocaleDateString('en-US', options);
+    }
+    entryDate.textContent = formatDate(date);
+
+    // Load existing entry if exists
+    const saved = localStorage.getItem(`entry-${date}`);
+    if (saved) {
+      entryContent.value = saved;
+    }
+
+    // Auto-save on typing
+    entryContent.addEventListener('input', () => {
+      localStorage.setItem(`entry-${date}`, entryContent.value);
+      status.classList.remove('hidden');
+      setTimeout(() => {
+        status.classList.add('hidden');
+      }, 1000);
+    });
+
+    function goBack() {
+      window.location.href = 'mainhub.html';
+    }
+  </script>
+
+</body>
+</html>
