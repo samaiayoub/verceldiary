@@ -41,12 +41,15 @@
     let displayedYear = now.getFullYear();
     let displayedMonth = now.getMonth();
 
-    // ✅ FIXED: Get local date instead of UTC
-    const todayDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    const todayDate = formatDateKey(now); // YYYY-MM-DD
 
     function formatDateDisplay(date) {
       const options = { day: 'numeric', month: 'long', year: 'numeric' };
       return date.toLocaleDateString('en-US', options);
+    }
+
+    function formatDateKey(date) {
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     }
 
     function formatMonthYear(year, month) {
@@ -74,19 +77,23 @@
         const hasEntry = localStorage.getItem(`entry-${fullDate}`) !== null;
         const isToday = fullDate === todayDate;
 
-        const onClick = (hasEntry || isToday)
-          ? `openEntry('${fullDate}')`
-          : `showNotThereMessage()`;
-
         calendarEl.innerHTML += `
           <div 
-            onclick="${onClick}"
+            onclick="handleDayClick('${fullDate}', ${hasEntry}, ${isToday})"
             class="cursor-pointer text-center py-3 rounded-lg border hover:shadow transition
               ${hasEntry ? 'bg-blue-400 text-white font-bold' : 'bg-white text-blue-800'}
               ${isToday ? 'ring-2 ring-blue-500' : ''}">
             ${day}
           </div>
         `;
+      }
+    }
+
+    function handleDayClick(date, hasEntry, isToday) {
+      if (hasEntry || isToday) {
+        openEntry(date);
+      } else {
+        showNotThereMessage();
       }
     }
 
