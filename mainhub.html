@@ -72,9 +72,13 @@
         const hasEntry = localStorage.getItem(`entry-${fullDate}`) !== null;
         const isToday = fullDate === todayDate;
 
+        const onClick = (hasEntry || isToday)
+          ? `openEntry('${fullDate}')`
+          : `showNotThereMessage()`;
+
         calendarEl.innerHTML += `
           <div 
-            onclick="${hasEntry ? `openEntry('${fullDate}')` : `showNotThereMessage()`}"
+            onclick="${onClick}"
             class="cursor-pointer text-center py-3 rounded-lg border hover:shadow transition
               ${hasEntry ? 'bg-blue-400 text-white font-bold' : 'bg-white text-blue-800'}
               ${isToday ? 'ring-2 ring-blue-500' : ''}">
