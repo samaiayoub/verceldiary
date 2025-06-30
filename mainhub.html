@@ -20,7 +20,10 @@
   </div>
 
   <!-- Calendar Container -->
-  <div id="calendar" class="grid grid-cols-7 gap-2 w-full max-w-4xl mb-8"></div>
+  <div id="calendar" class="grid grid-cols-7 gap-2 w-full max-w-4xl mb-4"></div>
+
+  <!-- Message for untouched day click -->
+  <p id="notThereMessage" class="text-red-500 font-medium mb-4 hidden">Not there yet</p>
 
   <!-- New Entry Button -->
   <button onclick="goToTodayEntry()"
@@ -32,6 +35,7 @@
     const calendarEl = document.getElementById("calendar");
     const currentDayEl = document.getElementById("currentDay");
     const monthYearEl = document.getElementById("monthYear");
+    const notThereMessage = document.getElementById("notThereMessage");
 
     const now = new Date();
     let displayedYear = now.getFullYear();
@@ -52,18 +56,17 @@
       calendarEl.innerHTML = "";
       currentDayEl.textContent = formatDateDisplay(now);
       monthYearEl.textContent = formatMonthYear(year, month);
+      notThereMessage.classList.add("hidden");
 
       const monthStart = new Date(year, month, 1);
       const monthEnd = new Date(year, month + 1, 0);
       const startDay = monthStart.getDay(); // 0 = Sunday
       const totalDays = monthEnd.getDate();
 
-      // Add blank days before 1st
       for (let i = 0; i < startDay; i++) {
         calendarEl.innerHTML += `<div></div>`;
       }
 
-      // Add actual days
       for (let day = 1; day <= totalDays; day++) {
         const fullDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const hasEntry = localStorage.getItem(`entry-${fullDate}`) !== null;
@@ -71,7 +74,7 @@
 
         calendarEl.innerHTML += `
           <div 
-            onclick="openEntry('${fullDate}')"
+            onclick="${hasEntry ? `openEntry('${fullDate}')` : `showNotThereMessage()`}"
             class="cursor-pointer text-center py-3 rounded-lg border hover:shadow transition
               ${hasEntry ? 'bg-blue-400 text-white font-bold' : 'bg-white text-blue-800'}
               ${isToday ? 'ring-2 ring-blue-500' : ''}">
@@ -83,6 +86,13 @@
 
     function openEntry(date) {
       window.location.href = `entry.html?date=${date}`;
+    }
+
+    function showNotThereMessage() {
+      notThereMessage.classList.remove("hidden");
+      setTimeout(() => {
+        notThereMessage.classList.add("hidden");
+      }, 2000);
     }
 
     function goToTodayEntry() {
