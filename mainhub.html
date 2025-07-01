@@ -63,15 +63,17 @@
       monthYearEl.textContent = formatMonthYear(year, month);
       notThereMessage.classList.add("hidden");
 
-      const monthStart = new Date(year, month, 1);
-      const monthEnd = new Date(year, month + 1, 0);
-      const startDay = monthStart.getDay();
-      const totalDays = monthEnd.getDate();
+      const firstDayOfMonth = new Date(year, month, 1);
+      const lastDayOfMonth = new Date(year, month + 1, 0);
+      const totalDays = lastDayOfMonth.getDate();
+      const startDayOfWeek = firstDayOfMonth.getDay(); // Sunday = 0
 
-      for (let i = 0; i < startDay; i++) {
+      // Fill empty slots before the first day
+      for (let i = 0; i < startDayOfWeek; i++) {
         calendarEl.innerHTML += `<div></div>`;
       }
 
+      // Fill actual days
       for (let day = 1; day <= totalDays; day++) {
         const fullDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const hasEntry = localStorage.getItem(`entry-${fullDate}`) !== null;
